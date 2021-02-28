@@ -113,7 +113,7 @@ for query in queries:
         vid_request = youtube.videos().list(part="contentDetails", id=",".join(vid_ids))
         vid_response = vid_request.execute()
 
-        # Three variable that hold three big strings
+        # Three variables to hold three big strings
         
         hours_pattern = re.compile(r"(\d+)H")
         minutes_pattern = re.compile(r"(\d+)M")
