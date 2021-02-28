@@ -1,4 +1,4 @@
-# Download six modules, random is already installed
+# Download six modules--random is installed when python is downloaded
 
 from bs4 import BeautifulSoup
 import re
