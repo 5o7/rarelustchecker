@@ -6,11 +6,17 @@ import urllib.request
 from googleapiclient.discovery import build
 import random
 
+# Watch https://youtu.be/th5_9woFJmk to get an api_key
+
 api_key = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 youtube = build("youtube", "v3", developerKey=api_key)
 
+# An empty list called queries and a variable to act as a counter
+
 queries = []
 count = 0
+
+# Parse and extract just the movie titles from the website's movie index 
 
 source = requests.get("https://rarelust.com/movies-index/").text
 soup = BeautifulSoup(source, 'lxml')
@@ -36,14 +42,24 @@ for i in rare_info:
         if "Back to top" not in i:
             queries.append(i)
 
+# Shuffle the list five times
+
 for i in range(0, 5):
     random.shuffle(queries)
+
+# Print the list of movie titles to the output and the length of the list
+
 for i in queries:
     print(i)
 
 print(len(queries))
 
+# For every item in the queires list, do the following...
+
 for query in queries:
+    
+    # Try to extract the movie's duration from imdb
+    
     try:
         count = count + 1
         vid_ids = []
@@ -83,27 +99,36 @@ for query in queries:
         print("")
     except:
         print("imdb failed")
-
+    
     try:
+        
+        # Search YouTube for the movie title and from the status, get the duration
+        
         query = query.replace(" ", "+")
         html = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + query)
-
         vid_ids = re.findall(r"watch\?v=(\S{11})", html.read().decode())
-
-
         vid_request = youtube.videos().list(part="contentDetails", id=",".join(vid_ids))
         vid_response = vid_request.execute()
 
+        # Three variable that hold three big strings
+        
         hours_pattern = re.compile(r"(\d+)H")
         minutes_pattern = re.compile(r"(\d+)M")
         seconds_pattern = re.compile(r"(\d+)S")
 
+        # Just consider the top 20 results from the youtube search
+        
         for i in range(0, 20):
+            
+            # Unpack dictionaries to get the result's content details
+            
             vid_response["items"][i]["contentDetails"]
             duration = vid_response["items"][i]["contentDetails"]["duration"]
             definition = vid_response["items"][i]["contentDetails"]["definition"]
             link = "https://www.youtube.com/watch?v=" + vid_response["items"][i]["id"]
 
+            # Collect and convert duration details into minutes
+            
             hours = hours_pattern.search(duration)
             minutes = minutes_pattern.search(duration)
             seconds = seconds_pattern.search(duration)
@@ -114,6 +139,8 @@ for query in queries:
 
             total_minutes = hours*60 + minutes + int(seconds/60)
 
+            # Print the youtube link, the movie title, definition, and duration
+            
             yt_link = "https://www.youtube.com/watch?v=" + vid_ids[i]
             source2 = requests.get(yt_link).text
             soup = BeautifulSoup(source, 'lxml')
@@ -136,6 +163,7 @@ for query in queries:
                 print(total_minutes)
                 print()
                 break
+                
     except:
         print("youtube failed")
 
