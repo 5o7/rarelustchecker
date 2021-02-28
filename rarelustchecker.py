@@ -1,3 +1,5 @@
+# Download these seven modules
+
 from bs4 import BeautifulSoup
 import re
 import requests
@@ -47,7 +49,7 @@ for i in rare_info:
 for i in range(0, 5):
     random.shuffle(queries)
 
-# Print the list of movie titles to the output and the length of the list
+# Print the list of movie titles to the output and its length
 
 for i in queries:
     print(i)
