@@ -150,8 +150,6 @@ for query in queries:
             
             yt_link = "https://www.youtube.com/watch?v=" + vid_ids[i]
             
-            # Do not recall what is happening here
-            
             # A variable, soup, to hold all the general data of the youtube link in one giant text file
             
             source = requests.get(yt_link).text
