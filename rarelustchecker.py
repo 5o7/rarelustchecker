@@ -1,4 +1,4 @@
-# Download these seven modules
+# Download six modules, random is already installed
 
 from bs4 import BeautifulSoup
 import re
