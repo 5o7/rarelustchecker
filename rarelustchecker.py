@@ -97,6 +97,7 @@ for query in queries:
         print(imdb_title)
         print("time: " + imdb_duration + " min")
         print("")
+        
     except:
         print("imdb failed")
     
@@ -120,32 +121,42 @@ for query in queries:
         
         for i in range(0, 20):
             
-            # Unpack dictionaries to get the result's content details
+            # Make a variable called link to hold a video's ID 
             
             vid_response["items"][i]["contentDetails"]
             duration = vid_response["items"][i]["contentDetails"]["duration"]
             definition = vid_response["items"][i]["contentDetails"]["definition"]
             link = "https://www.youtube.com/watch?v=" + vid_response["items"][i]["id"]
 
-            # Collect and convert duration details into minutes
+            # From the video's ID, make three variables to hold data
             
             hours = hours_pattern.search(duration)
             minutes = minutes_pattern.search(duration)
             seconds = seconds_pattern.search(duration)
-
+            
+            # Safety check in case video does not include hours, or minutes, or seconds
+            
             hours = int(hours.group(1)) if hours else 0
             minutes = int(minutes.group(1)) if minutes else 0
             seconds = int(seconds.group(1)) if seconds else 0
-
+            
+            # Math to convert everything to minutes
+            
             total_minutes = hours*60 + minutes + int(seconds/60)
 
-            # Print the youtube link, the movie title, definition, and duration
+            # A variable to hold the YouYube link
             
             yt_link = "https://www.youtube.com/watch?v=" + vid_ids[i]
-            source2 = requests.get(yt_link).text
-            soup = BeautifulSoup(source, 'lxml')
+            
+            # Do not recall what is happening here
+            
+            # A variable, soup, to hold all the general data of the youtube link in one giant text file
+            
             source = requests.get(yt_link).text
-            soup2 = BeautifulSoup(source, 'lxml')
+            soup = BeautifulSoup(source, 'lxml')
+            
+            # Parse data and extract the title of the youtube link
+            
             yt_info = soup2.find("div", class_="watch-main-col")
             yt_info = str(yt_info)
             yt_title = yt_info.split("content=")
@@ -154,9 +165,17 @@ for query in queries:
             yt_title = yt_title[0]
             yt_title = yt_title.replace('"', "")
 
+            # Make two integers to define a range close to movie duration
+            
             upper_limit = int(imdb_duration) + 5
             lower_limit = int(imdb_duration) - 5
+            
+            # Check if the Youtube link is close to the imdb duration
+            
             if lower_limit <= total_minutes <= upper_limit:
+                
+                # If so, print the youtube link, the movie title, definition, and duration
+                
                 print(yt_title)
                 print(link)
                 print(definition)
